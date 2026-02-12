@@ -37,9 +37,6 @@ const {
   validateContactStatus
 } = require('../middleware/validator');
 
-// Import upload middleware
-const { uploadPartnerLogo } = require('../middleware/upload');
-
 // Apply protection and rate limiting to all admin routes
 router.use(protect);
 router.use(adminLimiter);
@@ -59,8 +56,8 @@ router.put('/videos/reorder', reorderVideos);
 // Partner routes
 router.get('/partners', getAllPartners);
 router.get('/partners/:id', getPartner);
-router.post('/partners', uploadPartnerLogo, validatePartner, createPartner);
-router.put('/partners/:id', uploadPartnerLogo, validatePartner, updatePartner);
+router.post('/partners', validatePartner, createPartner);
+router.put('/partners/:id', validatePartner, updatePartner);
 router.delete('/partners/:id', deletePartner);
 router.put('/partners/reorder', reorderPartners);
 
