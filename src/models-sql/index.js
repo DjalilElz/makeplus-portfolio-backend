@@ -10,7 +10,8 @@ const StatsModel = require('./Stats');
 
 // Database configuration from environment variables
 const dbConfig = {
-  dialect: process.env.DB_DIALECT || 'mysql', // 'mysql' or 'postgres'
+  dialect: process.env.DB_DIALECT || 'mysql', // 'mysql', 'postgres', or 'sqlite'
+  storage: process.env.DB_STORAGE || './database.sqlite', // For SQLite only
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || (process.env.DB_DIALECT === 'postgres' ? 5432 : 3306),
   database: process.env.DB_NAME,
@@ -30,12 +31,20 @@ const dbConfig = {
 };
 
 // Initialize Sequelize instance
-const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.username,
-  dbConfig.password,
-  dbConfig
-);
+// For SQLite, we only need dialect and storage
+const sequelize = process.env.DB_DIALECT === 'sqlite' 
+  ? new Sequelize({
+      dialect: 'sqlite',
+      storage: dbConfig.storage,
+      logging: dbConfig.logging,
+      define: dbConfig.define
+    })
+  : new Sequelize(
+      dbConfig.database,
+      dbConfig.username,
+      dbConfig.password,
+      dbConfig
+    );
 
 // Initialize models
 const db = {};
