@@ -70,32 +70,29 @@ app.use(cookieParser());
 // Serve static files (uploaded files)
 app.use('/uploads', express.static('uploads'));
 
-// Request logging (development)
-if (process.env.NODE_ENV === 'development') {
-  app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
-    next();
-  });
-}
+// Request logging (always enabled for debugging)
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
 
-// API routes - configurable base path for different deployment scenarios
-const basePath = process.env.BASE_PATH || '/api';
-app.use(basePath, routes);
+// API routes - mount at both /api and root for cPanel compatibility
+app.use('/api', routes);
+app.use('/', routes);
 
 // Welcome route
 app.get('/', (req, res) => {
-  const apiPrefix = basePath === '/' ? '' : basePath;
   res.json({
     success: true,
     message: 'Welcome to Makeplus Portfolio API',
     version: '1.0.0',
     endpoints: {
-      health: `${apiPrefix}/health`,
-      contact: `${apiPrefix}/contact`,
-      stats: `${apiPrefix}/content/stats`,
-      videos: `${apiPrefix}/content/videos`,
-      partners: `${apiPrefix}/content/partners`,
-      admin: `${apiPrefix}/admin/*`
+      health: '/api/health',
+      contact: '/api/contact',
+      stats: '/api/content/stats',
+      videos: '/api/content/videos',
+      partners: '/api/content/partners',
+      admin: '/api/admin/*'
     }
   });
 });
