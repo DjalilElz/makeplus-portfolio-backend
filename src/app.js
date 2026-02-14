@@ -78,22 +78,24 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// API routes
-app.use('/api', routes);
+// API routes - configurable base path for different deployment scenarios
+const basePath = process.env.BASE_PATH || '/api';
+app.use(basePath, routes);
 
 // Welcome route
 app.get('/', (req, res) => {
+  const apiPrefix = basePath === '/' ? '' : basePath;
   res.json({
     success: true,
     message: 'Welcome to Makeplus Portfolio API',
     version: '1.0.0',
     endpoints: {
-      health: '/api/health',
-      contact: '/api/contact',
-      stats: '/api/content/stats',
-      videos: '/api/content/videos',
-      partners: '/api/content/partners',
-      admin: '/api/admin/*'
+      health: `${apiPrefix}/health`,
+      contact: `${apiPrefix}/contact`,
+      stats: `${apiPrefix}/content/stats`,
+      videos: `${apiPrefix}/content/videos`,
+      partners: `${apiPrefix}/content/partners`,
+      admin: `${apiPrefix}/admin/*`
     }
   });
 });
