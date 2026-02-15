@@ -1,0 +1,76 @@
+MAKEPLUS PORTFOLIO BACKEND - SETUP INSTRUCTIONS
+===============================================
+
+WHAT'S INCLUDED:
+- Complete Node.js backend source code
+- Configuration template (.env.production)
+- Database models (auto-create tables with Sequelize)
+- Admin creation script
+- API documentation
+
+WHAT YOU NEED TO DO:
+====================
+
+1. CREATE MYSQL DATABASE in cPanel:
+   - Database name: anything (note the full name with prefix)
+   - User: create a user with strong password
+   - Grant ALL PRIVILEGES to user on database
+
+2. UPLOAD & EXTRACT FILES to your server
+
+3. INSTALL DEPENDENCIES:
+   npm install
+
+4. CONFIGURE ENVIRONMENT:
+   - Rename .env.production to .env
+   - Edit .env with your credentials:
+     
+     DB_NAME=your_actual_database_name
+     DB_USER=your_actual_database_user  
+     DB_PASSWORD=your_actual_database_password
+     
+     JWT_SECRET=generate-random-32-char-minimum-string
+     
+     SMTP_HOST=mail.yourdomain.com
+     SMTP_USER=contact@yourdomain.com
+     SMTP_PASSWORD=your_email_password
+     EMAIL_TO=admin@yourdomain.com
+     
+     FRONTEND_URL=https://your-frontend-url.com
+     ADMIN_URL=https://your-admin-panel-url.com
+
+5. SETUP NODE.JS APP in cPanel:
+   - Version: Node.js 18.20.8 or higher
+   - Mode: Production
+   - Root: /home/username/repositories/makeplus-portfolio-backend
+   - URL: yourdomain.com/api
+   - Startup file: server.js
+
+6. START APPLICATION
+
+7. CREATE ADMIN USER:
+   npm run create-admin
+
+8. TEST:
+   Visit: https://yourdomain.com/api/health
+   Should return: {"status":"healthy","database":"connected"}
+
+IMPORTANT NOTES:
+================
+- Node.js version must be ≥18.0.0
+- Database tables auto-create on first run (DB_SYNC=true)
+- After successful first run, set DB_SYNC=false in .env
+- Change JWT_SECRET to a strong random string
+- NO node_modules included - you must run npm install
+
+DOCUMENTATION:
+==============
+- README.md: Full project documentation
+- API-DOCUMENTATION.md: Complete API reference
+
+REPOSITORY:
+===========
+GitHub: https://github.com/DjalilElz/makeplus-portfolio-backend
+Latest commit: e10e869
+
+THAT'S IT! 🚀
