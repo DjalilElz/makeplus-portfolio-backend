@@ -7,15 +7,12 @@ A production-ready Node.js/Express backend API for the Makeplus portfolio websit
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
-- [Installation](#installation)
 - [Configuration](#configuration)
 - [Running the Application](#running-the-application)
 - [API Documentation](#api-documentation)
-- [Deployment](#deployment)
 - [Project Structure](#project-structure)
 - [Scripts](#scripts)
 - [Security](#security)
-- [License](#license)
 
 ## ✨ Features
 
@@ -49,21 +46,16 @@ Before installation, ensure you have:
 
 ## 🚀 Installation
 
-1. **Clone or extract the repository**:
-   ```bash
-   cd makeplus-portfolio-backend
-   ```
+1. **Extract the files** to your server
 
 2. **Install dependencies**:
    ```bash
    npm install
    ```
 
-3. **Create environment file**:
-   ```bash
-   cp .env.production .env
-   ```
-   Or create a new `.env` file (see Configuration section below)
+3. **Configure environment**:
+   - Rename `.env.production` to `.env`
+   - Update with your database credentials (see Configuration below)
 
 ## ⚙️ Configuration
 
@@ -174,7 +166,7 @@ npm run verify
 
 ## 📚 API Documentation
 
-See [API-DOCUMENTATION.md](./API-DOCUMENTATION.md) for detailed endpoint documentation.
+See [API-DOCUMENTATION.md](./API-DOCUMENTATION.md) for complete endpoint documentation.
 
 ### Quick Overview
 
@@ -192,24 +184,6 @@ See [API-DOCUMENTATION.md](./API-DOCUMENTATION.md) for detailed endpoint documen
 | `/api/content/partners` | GET | No | Get partners |
 | `/api/admin/login` | POST | No | Admin login |
 | `/api/admin/*` | Various | Yes | Admin operations |
-
-## 🌐 Deployment
-
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions for:
-
-- cPanel shared hosting
-- VPS/Dedicated servers
-- Cloud platforms (Heroku, Railway, etc.)
-
-### Quick cPanel Deployment
-
-1. Upload files via Git or File Manager
-2. Create MySQL database and user
-3. Configure `.env` file with database credentials
-4. Setup Node.js application in cPanel
-5. Run `npm install`
-6. Start the application
-7. Run `npm run create-admin` via Terminal
 
 ## 📁 Project Structure
 
@@ -339,16 +313,15 @@ lsof -ti:5000 | xargs kill -9
 3. Check server logs for startup errors
 4. Ensure `.env` file exists and is loaded
 
+## � Important Notes
+
+- **Node.js**: Requires version ≥18.0.0
+- **Database**: MySQL with Sequelize ORM
+- **Auto-sync**: `DB_SYNC=true` creates tables automatically on first run (set to `false` after initial deployment)
+- **Security**: Change `JWT_SECRET` to a strong random string (min 32 characters)
+- **Email**: Configure SMTP settings for contact form notifications
+- **CORS**: Update `FRONTEND_URL` and `ADMIN_URL` with your actual domain URLs
+
 ## 📄 License
 
 ISC License - Copyright (c) 2026 Makeplus
-
-## 👥 Support
-
-For issues or questions, contact the development team or refer to:
-- [API Documentation](./API-DOCUMENTATION.md)
-- [Deployment Guide](./DEPLOYMENT.md)
-
----
-
-**Note for Developer**: This project was configured for MySQL deployment on cPanel shared hosting. The database setup uses Sequelize ORM with auto-sync enabled (`DB_SYNC=true`) to automatically create tables on first run. Make sure to set `DB_SYNC=false` after initial deployment to prevent schema overwrites.
