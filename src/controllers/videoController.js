@@ -12,7 +12,7 @@ const getPublicVideos = async (req, res, next) => {
       where: { isActive: true },
       order: [
         ['order', 'ASC'],
-        ['createdAt', 'DESC']
+        ['created_at', 'DESC']
       ],
       attributes: { exclude: ['createdBy'] }
     });
@@ -36,7 +36,7 @@ const getAllVideos = async (req, res, next) => {
     const videos = await Video.findAll({
       order: [
         ['order', 'ASC'],
-        ['createdAt', 'DESC']
+        ['created_at', 'DESC']
       ],
       include: [{
         model: Admin,
