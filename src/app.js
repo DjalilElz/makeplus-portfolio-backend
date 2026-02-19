@@ -76,6 +76,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// Don't handle /admin routes - let Apache serve the admin dashboard static files
+app.use((req, res, next) => {
+  if (req.path.startsWith('/admin')) {
+    console.log(`[ADMIN] Passing ${req.path} to Apache`);
+    return next('route');
+  }
+  next();
+});
+
 // API routes - mount at both /api and root for cPanel compatibility
 app.use('/api', routes);
 app.use('/', routes);
