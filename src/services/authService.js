@@ -58,7 +58,7 @@ const login = async (email, password) => {
   }
   
   // Check if admin is active
-  if (!admin.is_active) {
+  if (!admin.isActive) {
     throw new Error('Account is deactivated');
   }
   
@@ -86,7 +86,7 @@ const verifyToken = async (token) => {
       attributes: { exclude: ['password'] }
     });
     
-    if (!admin || !admin.is_active) {
+    if (!admin || !admin.isActive) {
       return null;
     }
     
