@@ -31,7 +31,7 @@ const protect = async (req, res, next) => {
         attributes: { exclude: ['password'] }
       });
       
-      if (!admin || !admin.is_active) {
+      if (!admin || !admin.isActive) {
         return res.status(401).json({
           success: false,
           message: 'Admin no longer exists or is inactive'
