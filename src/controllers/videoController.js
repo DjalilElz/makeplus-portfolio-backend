@@ -9,12 +9,12 @@ const { isValidYouTubeUrl, convertToEmbedUrl, extractVideoId } = require('../uti
 const getPublicVideos = async (req, res, next) => {
   try {
     const videos = await Video.findAll({
-      where: { is_active: true },
+      where: { isActive: true },
       order: [
-        ['display_order', 'ASC'],
-        ['created_at', 'DESC']
+        ['order', 'ASC'],
+        ['createdAt', 'DESC']
       ],
-      attributes: { exclude: ['created_by'] }
+      attributes: { exclude: ['createdBy'] }
     });
     
     res.status(200).json({
@@ -35,8 +35,8 @@ const getAllVideos = async (req, res, next) => {
   try {
     const videos = await Video.findAll({
       order: [
-        ['display_order', 'ASC'],
-        ['created_at', 'DESC']
+        ['order', 'ASC'],
+        ['createdAt', 'DESC']
       ],
       include: [{
         model: Admin,
