@@ -93,10 +93,10 @@ const createPartner = async (req, res, next) => {
     const partner = await Partner.create({
       name,
       logo: base64Image,
-      logo_mime_type: req.file.mimetype,
+      logoMimeType: req.file.mimetype,
       website,
-      display_order: order,
-      is_active: isActive
+      order,
+      isActive
     });
     
     res.status(201).json({

@@ -127,17 +127,17 @@ const createVideo = async (req, res, next) => {
     const parsedTags = tags ? (Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim())) : [];
     
     const video = await Video.create({
-      title_fr: titleFr,
-      title_en: titleEn,
-      description_fr: descriptionFr,
-      description_en: descriptionEn,
-      youtube_url: embedUrl,
-      youtube_video_id: videoId,
+      titleFr,
+      titleEn,
+      descriptionFr,
+      descriptionEn,
+      youtubeUrl: embedUrl,
+      youtubeVideoId: videoId,
       category,
       tags: parsedTags,
-      display_order: order,
-      is_active: isActive,
-      created_by: req.admin.id
+      order,
+      isActive,
+      createdBy: req.admin.id
     });
     
     res.status(201).json({
