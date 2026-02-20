@@ -16,7 +16,7 @@ const getPublicVideos = async (req, res, next) => {
       ],
       attributes: { exclude: ['createdBy'] }
     });
-    
+
     res.status(200).json({
       success: true,
       data: videos
@@ -44,7 +44,7 @@ const getAllVideos = async (req, res, next) => {
         attributes: ['name', 'email']
       }]
     });
-    
+
     res.status(200).json({
       success: true,
       data: videos
@@ -68,14 +68,14 @@ const getVideo = async (req, res, next) => {
         attributes: ['name', 'email']
       }]
     });
-    
+
     if (!video) {
       return res.status(404).json({
         success: false,
         message: 'Video not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       data: video
@@ -103,7 +103,7 @@ const createVideo = async (req, res, next) => {
       order = 0,
       isActive = true
     } = req.body;
-    
+
     // Validate YouTube URL
     if (!youtubeUrl) {
       return res.status(400).json({
@@ -111,21 +111,21 @@ const createVideo = async (req, res, next) => {
         message: 'YouTube URL is required'
       });
     }
-    
+
     if (!isValidYouTubeUrl(youtubeUrl)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid YouTube URL format'
       });
     }
-    
+
     // Convert to embed URL and extract video ID
     const embedUrl = convertToEmbedUrl(youtubeUrl);
     const videoId = extractVideoId(youtubeUrl);
-    
+
     // Parse tags if string
     const parsedTags = tags ? (Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim())) : [];
-    
+
     const video = await Video.create({
       titleFr,
       titleEn,
@@ -139,7 +139,7 @@ const createVideo = async (req, res, next) => {
       isActive,
       createdBy: req.admin.id
     });
-    
+
     res.status(201).json({
       success: true,
       message: 'Video created successfully',
@@ -158,14 +158,14 @@ const createVideo = async (req, res, next) => {
 const updateVideo = async (req, res, next) => {
   try {
     let video = await Video.findByPk(req.params.id);
-    
+
     if (!video) {
       return res.status(404).json({
         success: false,
         message: 'Video not found'
       });
     }
-    
+
     const {
       titleFr,
       titleEn,
@@ -177,7 +177,7 @@ const updateVideo = async (req, res, next) => {
       order,
       isActive
     } = req.body;
-    
+
     // Update fields
     if (titleFr !== undefined) video.title_fr = titleFr;
     if (titleEn !== undefined) video.title_en = titleEn;
@@ -186,7 +186,7 @@ const updateVideo = async (req, res, next) => {
     if (category !== undefined) video.category = category;
     if (order !== undefined) video.display_order = order;
     if (isActive !== undefined) video.is_active = isActive;
-    
+
     // If YouTube URL is being updated, validate and convert
     if (youtubeUrl !== undefined) {
       if (!isValidYouTubeUrl(youtubeUrl)) {
@@ -198,14 +198,14 @@ const updateVideo = async (req, res, next) => {
       video.youtube_url = convertToEmbedUrl(youtubeUrl);
       video.youtube_video_id = extractVideoId(youtubeUrl);
     }
-    
+
     // Update tags
     if (tags !== undefined) {
       video.tags = Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim());
     }
-    
+
     await video.save();
-    
+
     res.status(200).json({
       success: true,
       message: 'Video updated successfully',
@@ -224,17 +224,17 @@ const updateVideo = async (req, res, next) => {
 const deleteVideo = async (req, res, next) => {
   try {
     const video = await Video.findByPk(req.params.id);
-    
+
     if (!video) {
       return res.status(404).json({
         success: false,
         message: 'Video not found'
       });
     }
-    
+
     // Delete from database (no file cleanup needed for YouTube URLs)
     await video.destroy();
-    
+
     res.status(200).json({
       success: true,
       message: 'Video deleted successfully'
@@ -252,24 +252,24 @@ const deleteVideo = async (req, res, next) => {
 const reorderVideos = async (req, res, next) => {
   try {
     const { videos } = req.body;
-    
+
     if (!videos || !Array.isArray(videos)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid videos array'
       });
     }
-    
+
     // Update order for each video
-    const updatePromises = videos.map(({ id, order }) => 
+    const updatePromises = videos.map(({ id, order }) =>
       Video.update(
-        { display_order: order },
+        { order: order },
         { where: { id } }
       )
     );
-    
+
     await Promise.all(updatePromises);
-    
+
     res.status(200).json({
       success: true,
       message: 'Videos reordered successfully'

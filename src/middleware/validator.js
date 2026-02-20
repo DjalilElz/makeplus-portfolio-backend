@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator');
  */
 const validate = (req, res, next) => {
   const errors = validationResult(req);
-  
+
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -16,7 +16,7 @@ const validate = (req, res, next) => {
       }))
     });
   }
-  
+
   next();
 };
 
@@ -30,42 +30,42 @@ const validateContact = [
     .isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters')
     .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/).withMessage('Name can only contain letters, spaces, hyphens, and apostrophes')
     .escape(),
-  
+
   body('email')
     .trim()
     .notEmpty().withMessage('Email is required')
     .isEmail().withMessage('Invalid email format')
     .normalizeEmail(),
-  
+
   body('phone')
     .optional({ checkFalsy: true })
     .trim()
     .isLength({ min: 10, max: 20 }).withMessage('Phone must be between 10 and 20 characters')
     .matches(/^[\d\s+()-]+$/).withMessage('Phone can only contain numbers, spaces, +, (), and -')
     .escape(),
-  
+
   body('company')
     .optional({ checkFalsy: true })
     .trim()
     .isLength({ max: 100 }).withMessage('Company name cannot exceed 100 characters')
     .escape(),
-  
+
   body('subject')
     .trim()
     .notEmpty().withMessage('Subject is required')
     .isLength({ min: 3, max: 200 }).withMessage('Subject must be between 3 and 200 characters')
     .escape(),
-  
+
   body('message')
     .trim()
     .notEmpty().withMessage('Message is required')
     .isLength({ min: 10, max: 2000 }).withMessage('Message must be between 10 and 2000 characters')
     .escape(),
-  
+
   body('language')
     .optional()
     .isIn(['fr', 'en']).withMessage('Language must be either fr or en'),
-  
+
   validate
 ];
 
@@ -78,10 +78,10 @@ const validateLogin = [
     .notEmpty().withMessage('Email is required')
     .isEmail().withMessage('Invalid email format')
     .normalizeEmail(),
-  
+
   body('password')
     .notEmpty().withMessage('Password is required'),
-  
+
   validate
 ];
 
@@ -92,99 +92,84 @@ const validateStats = [
   body('internationalCongress.value')
     .optional()
     .isInt({ min: 0 }).withMessage('Value must be a positive integer'),
-  
+
   body('symposium.value')
     .optional()
     .isInt({ min: 0 }).withMessage('Value must be a positive integer'),
-  
+
   body('satisfiedCompanies.value')
     .optional()
     .isInt({ min: 0 }).withMessage('Value must be a positive integer'),
-  
+
   validate
 ];
 
 /**
- * Video validation (YouTube URL only)
+ * Video validation (Create)
  */
-const validateVideo = [
+const validateVideoCreate = [
   body('titleFr')
     .trim()
     .notEmpty().withMessage('French title is required')
     .isLength({ max: 200 }).withMessage('Title cannot exceed 200 characters')
     .escape(),
-  
+
   body('titleEn')
     .trim()
     .notEmpty().withMessage('English title is required')
     .isLength({ max: 200 }).withMessage('Title cannot exceed 200 characters')
     .escape(),
-  
-  body('descriptionFr')
-    .optional({ checkFalsy: true })
-    .trim()
-    .isLength({ max: 1000 }).withMessage('Description cannot exceed 1000 characters')
-    .escape(),
-  
-  body('descriptionEn')
-    .optional({ checkFalsy: true })
-    .trim()
-    .isLength({ max: 1000 }).withMessage('Description cannot exceed 1000 characters')
-    .escape(),
-  
+
   body('youtubeUrl')
-    .optional({ checkFalsy: true })
     .trim()
-    .isURL().withMessage('Invalid YouTube URL format')
-    .custom((value) => {
-      if (value && !value.includes('youtube.com') && !value.includes('youtu.be')) {
-        throw new Error('Must be a valid YouTube URL');
-      }
-      return true;
-    }),
-  
-  body('category')
-    .optional({ checkFalsy: true })
-    .trim()
-    .escape(),
-  
-  body('tags')
-    .optional({ checkFalsy: true }),
-  
-  body('order')
-    .optional()
-    .isInt({ min: 0 }).withMessage('Order must be a positive integer'),
-  
-  body('isActive')
-    .optional()
-    .isBoolean().withMessage('isActive must be a boolean'),
-  
+    .notEmpty().withMessage('YouTube URL is required')
+    .isURL().withMessage('Invalid YouTube URL format'),
+
+  body('isActive').optional().isBoolean(),
+  body('order').optional().isInt({ min: 0 }),
   validate
 ];
 
 /**
- * Partner validation
+ * Video validation (Update)
  */
-const validatePartner = [
+const validateVideoUpdate = [
+  body('titleFr').optional().trim().notEmpty().isLength({ max: 200 }).escape(),
+  body('titleEn').optional().trim().notEmpty().isLength({ max: 200 }).escape(),
+  body('youtubeUrl').optional().trim().isURL().withMessage('Invalid YouTube URL format'),
+  body('isActive').optional().isBoolean(),
+  body('order').optional().isInt({ min: 0 }),
+  validate
+];
+
+/**
+ * Partner validation (Create)
+ */
+const validatePartnerCreate = [
   body('name')
     .trim()
     .notEmpty().withMessage('Partner name is required')
     .isLength({ max: 100 }).withMessage('Name cannot exceed 100 characters')
     .escape(),
-  
+
   body('website')
     .optional({ checkFalsy: true })
     .trim()
     .isURL().withMessage('Invalid URL format'),
-  
-  body('order')
-    .optional()
-    .isInt({ min: 0 }).withMessage('Order must be a positive integer'),
-  
-  body('isActive')
-    .optional()
-    .isBoolean().withMessage('isActive must be a boolean'),
-  
+
+  body('isActive').optional().isBoolean(),
+  body('order').optional().isInt({ min: 0 }),
+  validate
+];
+
+/**
+ * Partner validation (Update)
+ */
+const validatePartnerUpdate = [
+  body('name').optional().trim().notEmpty().isLength({ max: 100 }).escape(),
+  body('website').optional().trim().isURL(),
+  body('isActive').optional().isBoolean(),
+  body('order').optional().isInt({ min: 0 }),
   validate
 ];
 
@@ -195,7 +180,7 @@ const validateContactStatus = [
   body('status')
     .notEmpty().withMessage('Status is required')
     .isIn(['new', 'read', 'replied', 'archived']).withMessage('Invalid status value'),
-  
+
   validate
 ];
 
@@ -203,7 +188,9 @@ module.exports = {
   validateContact,
   validateLogin,
   validateStats,
-  validateVideo,
-  validatePartner,
+  validateVideoCreate,
+  validateVideoUpdate,
+  validatePartnerCreate,
+  validatePartnerUpdate,
   validateContactStatus
 };
