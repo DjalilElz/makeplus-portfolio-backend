@@ -6,19 +6,23 @@ const { getAutoReplyTemplate } = require('../templates/autoReplyEmail');
  * Create email transporter
  */
 const createTransporter = () => {
-  return nodemailer.createTransport({
+  return nodemailer.createTransporter({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
     secure: process.env.SMTP_SECURE === 'true',
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASSWORD
+    },
+    tls: {
+      // Don't fail on invalid certificates (common with cPanel)
+      rejectUnauthorized: false
     }
   });
 };
 
 /**
- * Send notification email to admin (contact@makeplus.com)
+ * Send notification email to admin (info@wemakeplus.com)
  */
 const sendNotificationEmail = async (contactData) => {
   try {
@@ -27,6 +31,7 @@ const sendNotificationEmail = async (contactData) => {
     const mailOptions = {
       from: process.env.EMAIL_FROM,
       to: process.env.EMAIL_TO,
+      replyTo: contactData.email, // Allow direct reply to user
       subject: `[Makeplus Contact] ${contactData.subject}`,
       html: getNotificationTemplate(contactData)
     };
